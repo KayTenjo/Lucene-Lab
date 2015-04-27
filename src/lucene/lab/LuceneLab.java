@@ -24,10 +24,10 @@ public class LuceneLab {
         //IndexClass index = new IndexClass();
         //index.Indexer();
         
-        org.apache.log4j.BasicConfigurator.configure();
+        //org.apache.log4j.BasicConfigurator.configure();
 
-        MBSearch mbSearch = new MBSearch();
-        mbSearch.releaseSearch("A Sunshine state of mind rock king");
+        //MBSearch mbSearch = new MBSearch();
+        //mbSearch.releaseSearch("A Sunshine state of mind rock king");
     }
     
 }

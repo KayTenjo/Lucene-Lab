@@ -5,6 +5,12 @@
  */
 package lucene.lab;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import org.musicbrainz.MBWS2Exception;
 import org.musicbrainz.controller.Controller;
@@ -39,5 +45,31 @@ public class MBSearch {
         
        
         
+    }
+    public ArrayList<String> getTitle(){
+        ArrayList<String> titulos = new ArrayList();;
+        Connection c = null;
+        Statement stmt = null;
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/music",
+                            "postgres", "123");
+            stmt = c.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("SELECT DISTINCT TITLE FROM MUSIC ");
+            
+            while (rs.next()) {
+                String title = rs.getString("TITLE");
+                titulos.add(title);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Got an exception oh dog! ");
+            System.err.println(e.getMessage());
+        }
+
+        return titulos;
+
     }
 }
