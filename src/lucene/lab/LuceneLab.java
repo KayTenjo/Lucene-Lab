@@ -27,7 +27,8 @@ public class LuceneLab {
         org.apache.log4j.BasicConfigurator.configure();
 
         MBSearch mbSearch = new MBSearch();
-        mbSearch.releaseSearch("A Sunshine state of mind rock king");
+        //mbSearch.releaseSearch("A Sunshine state of mind rock king");
+        mbSearch.releaseSearchByASIN("B000058A81");
     }
     
 }
