@@ -14,6 +14,13 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.regex.MatchResult;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -44,41 +51,41 @@ public class IndexClass {
         IndexWriterConfig config = new IndexWriterConfig(analyzer);
         config.setRAMBufferSizeMB(512.0);
         IndexWriter iwriter = new IndexWriter(directory, config);
-        
-        File file= new File("C:\\Users\\Valeria\\Documents\\Music.txt");
-        Scanner sc = new Scanner(file);
-        
-        while(sc.hasNextLine()){
-           
-            sc.next();
-            String productId=sc.nextLine();
-            sc.next();
-            String title=sc.nextLine();
-            sc.next();
-            String price=sc.nextLine();
-            sc.next();
-            String userId=sc.nextLine();
-            sc.next();
-            String profileName=sc.next();
-            sc.next();
-            String helpfulness=sc.nextLine();
-            sc.next();
-            String score=sc.next();
-            sc.next();
-            String time=sc.next();
-            sc.next();
-            String summary=sc.nextLine();
-            sc.next();
-            String text=sc.nextLine();
-            sc.nextLine();
+        Connection c = null;
+        Statement stmt = null;
+        ArrayList<String> ProductId= new ArrayList();
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/music",
+                            "postgres", "123");
+            System.out.println("Opened database successfully");
+            stmt = c.createStatement();
             
-            //System.out.println(" "+productId+" "+text+" ");
-            //System.out.println("");
-            //System.out.println("");
-            addDoc(iwriter, productId, title, userId, profileName, helpfulness, score, summary, text);
-        }
-            sc.close();        
-        iwriter.close();
+            ResultSet rs;         
+            rs = stmt.executeQuery("SELECT DISTINCT PRODUCTID FROM MUSIC ");
+            while (rs.next()) {
+                String productId = rs.getString("PRODUCTID");
+                ProductId.add(productId);
+            }
+            for (String ProductId1 : ProductId) {
+
+                String sql = "SELECT text FROM music WHERE productid=?";
+                PreparedStatement stm = c.prepareStatement(sql);
+                stm.setString(1, ProductId1);
+                ResultSet textos = stm.executeQuery();
+                while (textos.next()) {
+                    String text = textos.getString("text");
+                    System.out.println(text);
+                }
+
+            }
+            c.close();
+        } catch (Exception e) {
+            System.err.println("Got an exception fuck! ");
+            System.err.println(e.getMessage());
+        } 
+        
     }
         
        
@@ -100,6 +107,32 @@ public class IndexClass {
         
         w.addDocument(doc);
     }
+    
+    public ArrayList<String> getTitle(){
+        ArrayList<String> titulos = new ArrayList();;
+        Connection c = null;
+        Statement stmt = null;
 
-   
+        try {
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/music",
+                            "postgres", "123");
+            stmt = c.createStatement();
+            ResultSet rs;
+            rs = stmt.executeQuery("SELECT DISTINCT TITLE FROM MUSIC ");
+            
+            while (rs.next()) {
+                String title = rs.getString("TITLE");
+                titulos.add(title);
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Got an exception oh dog! ");
+            System.err.println(e.getMessage());
+        }
+
+        return titulos;
+
+    }
+
 }
