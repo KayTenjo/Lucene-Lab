@@ -57,3 +57,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+Music.txt
+*.properties
+build/built-jar.properties
+nbproject/private/private.xml
