@@ -5,13 +5,7 @@
  */
 package lucene.lab;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -22,19 +16,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.MatchResult;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.miscellaneous.PerFieldAnalyzerWrapper;
@@ -45,9 +31,7 @@ import org.apache.lucene.document.FloatDocValuesField;
 import org.apache.lucene.document.FloatField;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.LongField;
-import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.SortedDocValuesField;
-import org.apache.lucene.document.SortedSetDocValuesField;
 import org.apache.lucene.document.StoredField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -56,7 +40,6 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.BytesRef;
-import org.apache.lucene.util.NumericUtils;
 
 
 
@@ -89,15 +72,13 @@ public class IndexClass {
         
          
         // create a per-field analyzer wrapper using the StandardAnalyzer as .. standard analyzer ;)
-        PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(
-        new StandardAnalyzer(), analyzerPerField);
-        
-        
+        PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerPerField);
+               
         Path indexPath = Paths.get("C:\\index\\");
         Directory directory = FSDirectory.open(indexPath);
-        //IndexWriterConfig config = new IndexWriterConfig(analyzer);
-        //config.setRAMBufferSizeMB(512.0);
-        //IndexWriter iwriter = new IndexWriter(directory, config);
+        IndexWriterConfig config = new IndexWriterConfig(analyzerWrapper);
+        config.setRAMBufferSizeMB(512.0);
+        IndexWriter iwriter = new IndexWriter(directory, config);
         Statement stmt = null;
 
         MBSearch mbsearch=new MBSearch();
@@ -105,20 +86,24 @@ public class IndexClass {
         Connection c = null;
         //System.out.println(productId);
         for (String productId1 : productId) {
-            System.out.println(productId1);        
+            System.out.println("Obteniendo datos Para el documento asociado a: "+productId1);        
             
             ArrayList<String> delRelease = getFromRelease(productId1);
-            System.out.println(delRelease);
+            //System.out.println(delRelease);
 
-            ArrayList<String> datos=getFromMusic(productId1);
-            System.out.println(datos);
-            System.out.println("------------------------------------------");
+            ArrayList<String> delMusic=getFromMusic(productId1);
+            //System.out.println(datos);
+            //System.out.println("------------------------------------------");
+            addDoc(iwriter, productId1, delRelease.get(1), delMusic.get(0), delRelease.get(1), delMusic.get(2), Float.valueOf(delMusic.get(3)), delMusic.get(4), delMusic.get(5), delRelease.get(0), delRelease.get(2), delRelease.get(3), delRelease.get(4), 
+                    Integer.valueOf(delRelease.get(5)), delRelease.get(6), delRelease.get(7));
+            System.out.println("Añadido el documento "+productId1+" al índice");
 
         }
         
+        
         //addDoc(iwriter, productId, title, userId, profileName, helpfulness, score, summary, text); 
         
-        //iwriter.close();
+        iwriter.close();
 
         
     }
@@ -127,7 +112,6 @@ public class IndexClass {
         ResultSet rs=null;
         Connection c = null;
         PreparedStatement pst = null;
-        ArrayList<String> ProductId= new ArrayList();
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -219,12 +203,25 @@ public class IndexClass {
     
     private static void addDoc(IndexWriter w, String productId, String title, String userID, String profileName, 
             
-        String helpfulness, Float score, String summary, String text, String artist, Long date,
+        String helpfulness, Float score, String summary, String text, String artist, String date,
         String country, String barcode, Integer trackCount, String label, String language) throws IOException {
         Document doc = new Document();
+        if(date==null) date="";
+        if(title==null)title="";            
+        if(userID==null) userID="";
+        if(profileName==null) profileName="";
+        if(helpfulness==null) helpfulness="";
+        if(summary==null) summary="";
+        if(text==null) text="";
+        if(artist==null) artist="";
+        if(country==null) country="";
+        if(barcode==null) barcode="";
+        if(trackCount==null) trackCount=0;
+        if(score==null) score=(float)0;
+        if(label==null) label="";
+        if(language==null) language="";
         
-        
-        doc.add(new StringField("productId", productId, Field.Store.YES));
+        doc.add(new StringField("productId", productId, Field.Store.YES));//
         doc.add(new TextField("title", title, Field.Store.YES));
         doc.add(new SortedDocValuesField("title", new BytesRef(title)));
         doc.add(new StringField("userID", userID, Field.Store.YES));
@@ -233,11 +230,10 @@ public class IndexClass {
         doc.add(new FloatField("score", score, Field.Store.YES));
         doc.add(new FloatDocValuesField("score", score));
         doc.add(new TextField("summary", summary, Field.Store.YES));
-        doc.add(new TextField("text", text, Field.Store.YES));
-        
+        doc.add(new TextField("text", text, Field.Store.YES));        
         doc.add(new TextField("artist", artist, Field.Store.YES));
         doc.add(new SortedDocValuesField("artist", new BytesRef(artist)));
-        doc.add(new LongField("date", date, Field.Store.YES));
+        doc.add(new StringField("date", date, Field.Store.YES));
         doc.add(new StringField("country", country, Field.Store.YES));
         doc.add(new StringField("barcode", barcode, Field.Store.YES));
         doc.add(new IntField("trackCount", trackCount, Field.Store.YES));

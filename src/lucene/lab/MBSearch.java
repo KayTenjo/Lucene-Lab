@@ -65,7 +65,7 @@ public class MBSearch {
             System.err.println("Got an exception oh dog! ");
             System.err.println(e.getMessage());
         }
-        System.out.println("ya tengo los aidis");
+        System.out.println("productID capturados desde la tabla enriquecida");
         return aidis;
 
     }
