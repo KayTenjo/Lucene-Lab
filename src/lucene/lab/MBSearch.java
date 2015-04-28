@@ -83,6 +83,7 @@ public class MBSearch {
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
+
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
@@ -105,7 +106,9 @@ public class MBSearch {
                 System.out.println(title);
 
                 stmt = c.createStatement();
-                String sql = "INSERT INTO RELEASE " + "VALUES(?,?,?,?,?,?,?,?,?)";
+
+                String sql = "INSERT INTO RELEASE  " + "VALUES(?,?,?,?,?,?,?,?,?)";
+
                 pst = c.prepareStatement(sql);
                 pst.setString(1, productId1);
                 pst.setString(2, artista);
@@ -139,6 +142,8 @@ public class MBSearch {
         List<ReleaseResultWs2> firstSearchResultPage = releases.getFullSearchResultList();
 
         return firstSearchResultPage;
+       
+         
 
     }
 }

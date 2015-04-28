@@ -29,6 +29,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.MatchResult;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
@@ -124,9 +127,7 @@ public class IndexClass {
         ResultSet rs=null;
         Connection c = null;
         PreparedStatement pst = null;
-
         ArrayList<String> ProductId= new ArrayList();
-        
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -247,6 +248,7 @@ public class IndexClass {
     }
     
 
+
     public ArrayList<String> getTitle(){
         ArrayList<String> titulos = new ArrayList();;
         Connection c = null;
@@ -275,6 +277,5 @@ public class IndexClass {
     }
     
  
-
 
 }
