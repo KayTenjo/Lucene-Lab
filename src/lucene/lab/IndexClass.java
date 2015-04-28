@@ -183,12 +183,12 @@ public class IndexClass {
             rs=pst.executeQuery();
             int count=0;
             while (rs.next()) {
-                textos+=rs.getString("TEXT")+"##";
-                help+=rs.getString("HELPFULNESS")+"##";
-                summary+=rs.getString("SUMMARY")+"##";
+                textos+=rs.getString("TEXT")+" ";
+                help+=rs.getString("HELPFULNESS")+" ";
+                summary+=rs.getString("SUMMARY")+" ";
                 prom+=Float.parseFloat(rs.getString("SCORE"));
-                userID+=rs.getString("USERID")+"##";
-                profileName+=rs.getString("PROFILENAME")+"##";
+                userID+=rs.getString("USERID")+" ";
+                profileName+=rs.getString("PROFILENAME")+" ";
                 //System.out.println(prom);
 
                  count=count+1;
