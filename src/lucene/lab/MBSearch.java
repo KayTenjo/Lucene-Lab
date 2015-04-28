@@ -58,6 +58,7 @@ public class MBSearch {
         
             String title = release.getRelease().getTitle();
             System.out.println(title);
+            System.out.println(release.getRelease().getArtistCreditString());
         }
          
     }
