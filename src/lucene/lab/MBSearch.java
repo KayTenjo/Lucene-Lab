@@ -103,6 +103,7 @@ public class MBSearch {
                 int trackCount = datos.get(0).getRelease().getTracksCount();
                 String label = datos.get(0).getRelease().getLabelInfoString();
                 String language = datos.get(0).getRelease().getTextLanguage();
+                
                 System.out.println(title);
 
                 stmt = c.createStatement();

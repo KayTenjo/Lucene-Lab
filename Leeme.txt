@@ -1,0 +1,18 @@
+﻿Avance Lucene Grupo 5 (Valeria Asencio, Rodrigo Monsalve)
+Construcción del índice invertido
+
+Utilizamos el dataset de reviews de productos de música para obtener los comentarios y otros datos.
+Además para enriquecer los datos, utilizamos la API XML de MusicBrainz.
+
+Como debemos agrupar los documentos por álbum, construimos una base de datos relacional con todos los reviews del dataset, esto para poder manipular los datos de mejor manera y finalmente agrupar los comentarios en un sólo documento, así como el score del producto (el cual fue un promedio de todos) y el helpfulness.
+
+Para el enriquecimiento de los datos, utilizamos una librería que capturaba los datos de la API de MusicBrainz en un objeto manipulable en Java (https://code.google.com/p/musicbrainzws2-java/).
+El problema es que permite un tráfico muy limitado de consultas, por lo que de un total de más de 500.000 albumes, tenemos recopilados solamente 3.500 con todos sus datos (incluyendo todos los comentarios asociados. No tenemos un número exacto de comentarios pero por lo menos hay uno en cada producto).
+Estamos evaluando el descargar el servidor de MusicBrainz (es necesario para tener la base de datos de forma local) o continuar con la exploración de consultas.
+Estos datos fueron descargados y guardados en la base de datos que utilizamos para construir los documentos.
+
+No incluimos las librerías para ahorrar peso del archivo.
+
+
+
+
