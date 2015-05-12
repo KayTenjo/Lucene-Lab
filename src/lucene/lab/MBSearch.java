@@ -45,6 +45,72 @@ public class MBSearch {
 
 
 
+    public void insertRelease() throws MBWS2Exception, InterruptedException, SQLException, Exception {
+        DB db=new DB();
+        ArrayList<String> productId = db.getId("MUSIC");
+        //System.out.println("ya tengo todos los ID");
+        Connection c = null;
+        try {
+
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+                    .getConnection("jdbc:postgresql://localhost:5432/music",
+                            "postgres", "123");
+            c.setAutoCommit(false);
+            System.out.println("Opened database successfully");
+
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        Statement stmt = null;
+        PreparedStatement pst = null;
+
+        for (String productId1 : productId) {
+
+            List<ReleaseResultWs2> datos = releaseSearchByASIN(productId1);
+            if (!datos.isEmpty()) {
+                String artista = datos.get(0).getRelease().getArtistCreditString();
+                String title = datos.get(0).getRelease().getTitle();
+                String date = datos.get(0).getRelease().getDateStr();
+                String country = datos.get(0).getRelease().getCountryId();
+                String barCode = datos.get(0).getRelease().getBarcode();
+                int trackCount = datos.get(0).getRelease().getTracksCount();
+                String label = datos.get(0).getRelease().getLabelInfoString();
+                String language = datos.get(0).getRelease().getTextLanguage();
+                
+                System.out.println(title);
+
+                stmt = c.createStatement();
+
+                String sql = "INSERT INTO RELEASE  " + "VALUES(?,?,?,?,?,?,?,?,?)";
+
+                pst = c.prepareStatement(sql);
+                pst.setString(1, productId1);
+                pst.setString(2, artista);
+                pst.setString(3, title);
+                pst.setString(4, date);
+                pst.setString(5, country);
+                pst.setString(6, barCode);
+                pst.setInt(7, trackCount);
+                pst.setString(8, label);
+                pst.setString(9, language);
+                pst.executeUpdate();
+
+                stmt.close();
+                c.commit();
+                sql = null;
+
+                sleep(1001);
+            }
+
+        }
+        c.close();
+        System.out.println("Este mensaje no lo voy a ver jamás :c");
+    }
+
+
     public List<ReleaseResultWs2> releaseSearchByASIN(String ASIN) throws MBWS2Exception {
 
         Release releases = new Release();
