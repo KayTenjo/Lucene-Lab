@@ -30,6 +30,7 @@ public class DB {
         String password = "123";
         Class.forName(driver);
         Connection conn = DriverManager.getConnection(url, username, password);
+        System.out.println("Conectado!!");
         return conn;
     }
 
@@ -208,6 +209,27 @@ public class DB {
         }
         c.close();
         System.out.println("Este mensaje no lo voy a ver jamás :c");
+    }
+    
+    public void getIdRange(String tabla,int n, int m){
+        Connection c;
+        System.out.println("ola");
+        Statement stm=null;
+        try {
+            c=getConnection();
+            String sql="SELECT * FROM "+tabla+" LIMIT "+n+" OFFSET "+m+";";
+            stm=c.createStatement();
+            ResultSet rs;
+            rs = stm.executeQuery(sql);
+            int i=1;
+            while (rs.next()) {
+                System.out.println(i+" "+rs.getString("PRODUCTID"));
+                i++;               
+                
+            }
+        } catch (Exception e) {
+        }
+    
     }
     
 

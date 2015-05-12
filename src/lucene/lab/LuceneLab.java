@@ -33,7 +33,8 @@ public class LuceneLab {
        // IndexClass index = new IndexClass();
         DB db= new DB();
         //index.Indexer();
-        db.updateRelease();
+        db.getIdRange("RELEASE",3000,0);
+        /*
 
         while(true){
         Scanner sc = new Scanner(System.in);
@@ -42,7 +43,7 @@ public class LuceneLab {
         //System.out.print("Introduzca el campo : ");
         //String campo=sc.nextLine();
         reader.search(consulta,"oli");
-        }
+        }*/
         //IndexClass index = new IndexClass();
         //index.Indexer();
 
