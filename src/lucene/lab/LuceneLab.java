@@ -19,14 +19,14 @@ public class LuceneLab {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException {
+    public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, Exception {
         
         
-        IndexClass index = new IndexClass();
-        index.Indexer();
-        
+       // IndexClass index = new IndexClass();
+        DB db= new DB();
+        //index.Indexer();
+        db.updateRelease();
         //org.apache.log4j.BasicConfigurator.configure();
-
 
         //MBSearch mbSearch = new MBSearch();
         //mbSearch.releaseSearch("A Sunshine state of mind rock king");

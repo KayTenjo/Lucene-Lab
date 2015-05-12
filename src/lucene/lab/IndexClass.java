@@ -15,11 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
 import java.util.HashMap;
 import java.util.Map;
-
-
+import java.util.Scanner;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
@@ -51,7 +49,7 @@ import org.apache.lucene.util.BytesRef;
 public class IndexClass {
     
     
-    public void Indexer() throws IOException, SQLException{
+    public void Indexer() throws IOException, SQLException, Exception{
     
         Map<String, Analyzer> analyzerPerField = new HashMap<>();
         
@@ -70,8 +68,7 @@ public class IndexClass {
         analyzerPerField.put("label", new WhitespaceAnalyzer());
         analyzerPerField.put("language", new KeywordAnalyzer());
         
-         
-        // create a per-field analyzer wrapper using the StandardAnalyzer as .. standard analyzer ;)
+                 // create a per-field analyzer wrapper using the StandardAnalyzer as .. standard analyzer ;)
         PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerPerField);
                
         Path indexPath = Paths.get("C:\\index\\");
@@ -80,25 +77,28 @@ public class IndexClass {
         config.setRAMBufferSizeMB(512.0);
         IndexWriter iwriter = new IndexWriter(directory, config);
         Statement stmt = null;
+        DB db=new DB();
 
         MBSearch mbsearch=new MBSearch();
-        ArrayList<String> productId = mbsearch.getId();
+        ArrayList<String> productId = db.getId("RELEASE");
         Connection c = null;
         //System.out.println(productId);
         for (String productId1 : productId) {
             System.out.println("Obteniendo datos Para el documento asociado a: "+productId1);        
             
-            ArrayList<String> delRelease = getFromRelease(productId1);
+            ArrayList<String> delRelease = db.getFromRelease(productId1);
             //System.out.println(delRelease);
 
-            ArrayList<String> delMusic=getFromMusic(productId1);
+            ArrayList<String> delMusic=db.getFromMusic(productId1);
             //System.out.println(datos);
             //System.out.println("------------------------------------------");
             addDoc(iwriter, productId1, delRelease.get(1), delMusic.get(0), delRelease.get(1), delMusic.get(2), Float.valueOf(delMusic.get(3)), delMusic.get(4), delMusic.get(5), delRelease.get(0), delRelease.get(2), delRelease.get(3), delRelease.get(4), 
                     Integer.valueOf(delRelease.get(5)), delRelease.get(6), delRelease.get(7));
             System.out.println("Añadido el documento "+productId1+" al índice");
 
+
         }
+        
         
         
         //addDoc(iwriter, productId, title, userId, profileName, helpfulness, score, summary, text); 
@@ -107,93 +107,7 @@ public class IndexClass {
 
         
     }
-    public ArrayList<String> getFromRelease(String productId) {
-        ArrayList<String> datos=new ArrayList();
-        ResultSet rs=null;
-        Connection c = null;
-        PreparedStatement pst = null;
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/music",
-                            "postgres", "123");
-            String sql = "SELECT * FROM RELEASE WHERE PRODUCTID=?";
-            pst = c.prepareStatement(sql);
-            pst.setString(1, productId);
-            rs = pst.executeQuery();
-            while (rs.next()) {
-
-                datos.add(rs.getString("ARTIST"));
-                datos.add(rs.getString("TITLE"));
-                datos.add(rs.getString("DATE"));
-                datos.add(rs.getString("COUNTRY"));
-                datos.add(rs.getString("BARCODE"));
-                datos.add(String.valueOf(rs.getInt("TRACKCOUNT")));
-                datos.add(rs.getString("LABEL"));
-                datos.add(rs.getString("LANGUAGE"));
-
-            }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Got an exception oh dog! ");
-            System.err.println(e.getMessage());
-        }
-        return datos;
     
-    }
-    
-    
-    
-    public ArrayList<String> getFromMusic(String productId) {
-        ArrayList<String> datos=new ArrayList();
-        ResultSet rs=null;
-        Connection c = null;
-        PreparedStatement pst = null;
-        String textos="";
-        String help="";
-        String summary="";
-        String userID="";
-        String profileName="";
-        float prom=0;        
-        try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/music",
-                            "postgres", "123");
-            String sql = "SELECT * FROM MUSIC WHERE PRODUCTID=?";
-            pst = c.prepareStatement(sql);
-            pst.setString(1, productId);
-            rs=pst.executeQuery();
-            int count=0;
-            while (rs.next()) {
-                textos+=rs.getString("TEXT")+" ";
-                help+=rs.getString("HELPFULNESS")+" ";
-                summary+=rs.getString("SUMMARY")+" ";
-                prom+=Float.parseFloat(rs.getString("SCORE"));
-                userID+=rs.getString("USERID")+" ";
-                profileName+=rs.getString("PROFILENAME")+" ";
-                //System.out.println(prom);
-
-                 count=count+1;
-            }
-            prom=prom/count;
-            datos.add(userID);
-            datos.add(profileName);
-            datos.add(help);
-            datos.add(Float.toString(prom));
-            datos.add(summary);
-            datos.add(textos);
-
-
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("excepcion den getFromMusic ");
-            System.err.println(e.getMessage());
-        }
-        return datos;
-    
-
-    }
 
     
 
@@ -245,33 +159,5 @@ public class IndexClass {
     
 
 
-    public ArrayList<String> getTitle(){
-        ArrayList<String> titulos = new ArrayList();;
-        Connection c = null;
-        Statement stmt = null;
-
-        try {
-            Class.forName("org.postgresql.Driver");
-            c = DriverManager
-                    .getConnection("jdbc:postgresql://localhost:5432/music",
-                            "postgres", "123");
-            stmt = c.createStatement();
-            ResultSet rs;
-            rs = stmt.executeQuery("SELECT DISTINCT TITLE FROM MUSIC ");
-            
-            while (rs.next()) {
-                String title = rs.getString("TITLE");
-                titulos.add(title);
-            }
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println("Got an exception oh dog! ");
-            System.err.println(e.getMessage());
-        }
-
-        return titulos;
-
-    }
-    
- 
 
 }
