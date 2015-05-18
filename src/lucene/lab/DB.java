@@ -30,7 +30,7 @@ public class DB {
         String password = "123";
         Class.forName(driver);
         Connection conn = DriverManager.getConnection(url, username, password);
-        System.out.println("Conectado!!");
+        //System.out.println("Conectado!!");
         return conn;
     }
 
@@ -48,13 +48,13 @@ public class DB {
         return datos;
     }
 
-    public void updateRelease() throws SQLException, Exception {
-        MBSearch mbsearch = new MBSearch();
-        ArrayList<String> productId = getId("RELEASE");
-        Connection c;
+    public void updateRelease(int n, int m) throws SQLException, Exception {
+        ArrayList<String> productId = getIdRange("RELEASE", n, m);
+        Connection c=null;
         PreparedStatement pst = null;
         try {
             c = getConnection();
+            int i=1;
             for (String productId1 : productId) {
                 ArrayList<String> datosRelease = getFromMusic(productId1);
                 String query = "update release set userid=?, profilename=?, help = ?, score=?, summary=?, review=? " + "where productid = ? ";
@@ -67,12 +67,14 @@ public class DB {
                 pst.setString(6, datosRelease.get(5));
                 pst.setString(7, productId1);
                 pst.executeUpdate();
-                System.out.println("Se agreg\u00f3 el ID " + productId1);
+                System.out.println(i+". Actualizados datos del ID: " + productId1);
+                i++;
             }
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
+        c.close();
     }
 
     public ArrayList<String> getFromMusic(String productId) throws Exception {
@@ -166,19 +168,26 @@ public class DB {
         return aidis;
     }
 
-    public void insertRelease(MBSearch mbSearch) throws MBWS2Exception, InterruptedException, SQLException, Exception {
-        ArrayList<String> productId = getId("MUSIC");
-        Connection c =null;
+    public void insertRelease() throws MBWS2Exception, InterruptedException, SQLException, Exception {
+        MBSearch mbSearch=new MBSearch();
+        int n=3000;
+        int m=0;
+        ArrayList<String> productId = getIdRange("MUSIC",n,m);
+        Connection c=null;
         try {
             c=getConnection();
-            System.out.println("Opened database successfully");
         } catch (Exception e) {
             System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
         
         PreparedStatement pst = null;
+        int i = 1;
         for (String productId1 : productId) {
+            if (isIn("RELEASE", productId1)) {
+                System.out.println("está: "+productId1);
+                continue;
+            }            
             List<ReleaseResultWs2> datos = mbSearch.releaseSearchByASIN(productId1);
             if (!datos.isEmpty()) {
                 String artista = datos.get(0).getRelease().getArtistCreditString();
@@ -205,31 +214,57 @@ public class DB {
                 c.commit();
                 sql = null;
                 sleep(1001);
-            }
+            } else
+                System.out.println(i + ". No hay datos del:" + productId1);
+            i++;
         }
         c.close();
         System.out.println("Este mensaje no lo voy a ver jamás :c");
     }
     
-    public void getIdRange(String tabla,int n, int m){
+    public ArrayList<String> getIdRange(String tabla,int n, int m){
+        ArrayList<String> idis=new ArrayList();
         Connection c;
-        System.out.println("ola");
+        //System.out.println("ola");
         Statement stm=null;
+        int i=1;
         try {
             c=getConnection();
             String sql="SELECT * FROM "+tabla+" LIMIT "+n+" OFFSET "+m+";";
             stm=c.createStatement();
             ResultSet rs;
             rs = stm.executeQuery(sql);
-            int i=1;
             while (rs.next()) {
                 System.out.println(i+" "+rs.getString("PRODUCTID"));
-                i++;               
+                idis.add(rs.getString("PRODUCTID"));
+                i++;
                 
             }
         } catch (Exception e) {
         }
+        return idis;    
+    }
     
+    public boolean isIn(String tabla,String id){
+        Connection c;
+        PreparedStatement pst;
+        ResultSet rs;
+        try {
+            c = getConnection();
+            String sql = "SELECT * FROM "+tabla+" WHERE PRODUCTID=?";
+            pst = c.prepareStatement(sql);
+            pst.setString(1, id);
+            rs = pst.executeQuery();
+            if (!rs.isBeforeFirst()) {
+                //System.out.println("false");
+            return false;
+            }
+            
+        } catch (Exception e) {
+        }
+        //System.out.println("true");
+        return true;
+
     }
     
 
