@@ -27,13 +27,15 @@ public class LuceneLab {
     public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, ParseException, Exception {
 
         
-        ReaderClass reader = new ReaderClass();
+        TrainGenerator trainGenerator = new TrainGenerator();
         
-
+        trainGenerator.generateTrain();
+        //ReaderClass reader = new ReaderClass();
+       
        // IndexClass index = new IndexClass();
-        DB db= new DB();
+        //DB db= new DB();
         //index.Indexer();
-        db.getIdRange("RELEASE",3000,0);
+        //db.getIdRange("RELEASE",3000,0);
         /*
 
         while(true){
