@@ -36,6 +36,12 @@ public class LuceneLab {
         //DB db= new DB();
         //index.Indexer();
         //db.getIdRange("RELEASE",3000,0);
+
+
+        //db.isIn("RELEASE"," B000007SLB");
+        //db.getIdRange("RELEASE",40, 0);
+        
+
         /*
 
         while(true){
@@ -51,12 +57,12 @@ public class LuceneLab {
 
         //org.apache.log4j.BasicConfigurator.configure();
 
-        //MBSearch mbSearch = new MBSearch();
+       // MBSearch mbSearch = new MBSearch();
         //mbSearch.releaseSearch("A Sunshine state of mind rock king");
         //MBSearch mbSearch = new MBSearch();
         //mbSearch.releaseSearch("A Sunshine state of mind rock king");
         //mbSearch.releaseSearchByASIN("B000058A81");
-        //mbSearch.insertRelease();
+       // db.insertRelease();
         
 
     }
