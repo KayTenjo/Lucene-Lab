@@ -48,9 +48,13 @@ public class DB {
         return datos;
     }
 
-    public void updateRelease(int n, int m) throws SQLException, Exception {
-        ArrayList<String> productId = getIdRange("RELEASE", n, m);
-        Connection c=null;
+   // public void updateRelease(int n, int m) throws SQLException, Exception {
+    public void updateRelease() throws SQLException, Exception {
+        //ArrayList<String> productId = getIdRange("RELEASE", n, m);
+        ArrayList<String> productId = new ArrayList();
+        String ID = " B000S08YUK";
+        productId.add(ID);
+        Connection c = null;
         PreparedStatement pst = null;
         try {
             c = getConnection();
@@ -148,7 +152,7 @@ public class DB {
 
     public ArrayList<String> getId(String tabla) throws Exception {
         ArrayList<String> aidis = new ArrayList();
-        ;
+        
         Connection c;
         Statement stmt = null;
         try {
@@ -266,6 +270,9 @@ public class DB {
         return true;
 
     }
+    
+
+    
     
 
     

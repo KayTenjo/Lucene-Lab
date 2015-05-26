@@ -27,15 +27,16 @@ public class LuceneLab {
     public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, ParseException, Exception {
 
         
-        ReaderClass reader = new ReaderClass();
+        //ReaderClass reader = new ReaderClass();
         
 
        // IndexClass index = new IndexClass();
         DB db= new DB();
+       db.updateRelease();
         //index.Indexer();
         //db.getIdRange("RELEASE",3000,0);
         //db.isIn("RELEASE"," B000007SLB");
-        db.getIdRange("RELEASE",40, 0);
+        //db.getIdRange("RELEASE",40, 0);
         
         /*
 
@@ -52,7 +53,9 @@ public class LuceneLab {
 
         //org.apache.log4j.BasicConfigurator.configure();
 
-        MBSearch mbSearch = new MBSearch();
+        //MBSearch mbSearch = new MBSearch();
+        //malletClass coso= new malletClass();
+        //coso.createTextForMallet();
         //mbSearch.releaseSearch("A Sunshine state of mind rock king");
         //MBSearch mbSearch = new MBSearch();
         //mbSearch.releaseSearch("A Sunshine state of mind rock king");

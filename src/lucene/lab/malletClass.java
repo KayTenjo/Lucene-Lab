@@ -51,8 +51,7 @@ public class malletClass {
             pst = c.prepareStatement(sql);
             //pst.setString(1, productId);
             rs = pst.executeQuery();
-            while (rs.next()) {
-                
+            while (rs.next()) {                
                 
                 String productID = rs.getString("PRODUCTID");
                 
@@ -61,27 +60,27 @@ public class malletClass {
                 pst_id = c.prepareStatement(query_id);
                 pst_id.setString(1, productID);
                 
-                rs_id = pst.executeQuery();
+                rs_id = pst_id.executeQuery();
                 
                 int cont_id =0;
                 
                 while (rs_id.next()){
-                
-                    String comentario = rs.getString("TEXT");
-                    String score = rs.getString("HELPFULNESS");
+                    System.out.println("a");
+                    String comentario = rs_id.getString("TEXT");
+                    Float score = rs_id.getFloat("SCORE");
                     String sentimiento ="";
-                    if (Float.parseFloat(score) > 3){
+                    if (score > 3){
                         sentimiento = "POSITIVO";
                     } 
                 
-                    else if (Float.parseFloat(score) < 3){
+                    else if (score < 3){
                         sentimiento = "NEGATIVO";
                     }
                     else {
                         sentimiento = "NEUTRO";          
                     }
                     
-                    String id = rs.getString("PRODUCTID") +"-"+cont_id;
+                    String id = rs_id.getString("PRODUCTID") +"-"+cont_id;
                     
                     String resultado = id + " " + sentimiento + " " + comentario;
                     
@@ -89,17 +88,17 @@ public class malletClass {
                     bufferedWriter.newLine();
                     
                     cont_id++;
-                    
+                    System.out.println("Agregado a la lista " + id);
+
                 }
-             
-            fileWriter.close();
-            c.close();
-            
-            System.out.println("Creación archivo mallet finalizada");
+
                 
+
             }
-            
-            
+            fileWriter.close();
+
+            c.close();
+            System.out.println("Creación archivo mallet finalizada");
 
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Got an exception oh dog! ");
