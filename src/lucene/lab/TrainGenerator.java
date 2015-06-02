@@ -23,14 +23,13 @@ public class TrainGenerator {
      public void generateTrain() throws IOException{
      
         File file = new File("Music.txt");
-        BufferedWriter out = new BufferedWriter(new FileWriter("trainingData.txt"));
+        BufferedWriter out = new BufferedWriter(new FileWriter("trainingData.txt",true));
         Scanner sc = new Scanner(file);
         Scanner sc2 = new Scanner(System.in);
         String pid, title, price, uid, pname, hness, score, time, summ, text;
         String line;
-        int qtyOfTrainingSet = 100
-                ;
-        int startAt = 0;
+        int qtyOfTrainingSet = 100;
+        int startAt = 2500;
         int currentReview = 0;
         int itemsWritten = 0;
         int seleccion;
@@ -83,10 +82,17 @@ public class TrainGenerator {
             a = a.substring(a.indexOf(": ") + 2);
             text = a;
             a = sc.nextLine();
+            if (Float.valueOf(score) > 3) {
+                itemsWritten++;
+                currentReview++;
+                continue;
+
+            }
             System.out.println("============================================");
-            System.out.println(summ);
+            System.out.println(summ+" - Escore: "+score);
             System.out.println(text);
-            System.out.print("("+ itemsWritten + " de " +qtyOfTrainingSet +") 1 positivo, 2 neutro, 3 negativo?");
+            
+            System.out.print("("+ itemsWritten + " de " +qtyOfTrainingSet +") 1 positivo, 2 neutro, 3 negativo?: ");
             seleccion = sc2.nextInt();
             switch(seleccion){
                 case 1:
