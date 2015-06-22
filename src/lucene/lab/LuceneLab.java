@@ -29,10 +29,12 @@ public class LuceneLab {
 
         //ReaderClass reader = new ReaderClass();
 
-        TrainGenerator trainGenerator = new TrainGenerator();
+        //TrainGenerator trainGenerator = new TrainGenerator();
+        WritterClass escribe=new WritterClass();
+        escribe.writeMB();
 
         
-        trainGenerator.generateTrain();
+        //trainGenerator.generateTrain();
         //ReaderClass reader = new ReaderClass();
        
        // IndexClass index = new IndexClass();
