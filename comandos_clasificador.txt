@@ -1,0 +1,12 @@
+
+Importar datos
+
+.\bin\mallet import-file --input C:\mallet-result\datosEntrenamientoDef.txt --output C:\mallet-result\music.mallet --remove-stopwords --print-output
+
+Entrenar datos 
+
+.\bin\mallet train-classifier --input C:\mallet-result\music.mallet --output-classifier C:\mallet-result\music.classifier --trainer NaiveBayes --training-portion 0.9 --cross-validation 10
+
+Clasificar nuevos datos
+
+.\bin\mallet classify-file --input C:\mallet-result\clasificar.txt --output - --classifier C:\mallet-result\music.classifier

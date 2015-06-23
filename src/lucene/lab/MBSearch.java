@@ -56,7 +56,9 @@ public class MBSearch {
         releases.search("asin:" + ASIN);
         List<ReleaseResultWs2> firstSearchResultPage = releases.getFullSearchResultList();
 
+       
         return firstSearchResultPage;
+        
        
          
 

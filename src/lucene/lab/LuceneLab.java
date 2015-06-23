@@ -5,6 +5,8 @@
  */
 package lucene.lab;
 
+import cc.mallet.classify.Classifier;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -28,11 +30,19 @@ public class LuceneLab {
 
 
         //ReaderClass reader = new ReaderClass();
-
-        TrainGenerator trainGenerator = new TrainGenerator();
+        
+        
+        malletClass mallet = new malletClass();
+        
+        File archivo_clasificador = new File("music.classifier");
+        Classifier clasificador = mallet.loadClassifier(archivo_clasificador);
+        
+        String datos = ("1 a la vale es muy zorra");
+        mallet.printLabelings(clasificador, datos);
+        //TrainGenerator trainGenerator = new TrainGenerator();
 
         
-        trainGenerator.generateTrain();
+        //trainGenerator.generateTrain();
         //ReaderClass reader = new ReaderClass();
        
        // IndexClass index = new IndexClass();
