@@ -133,8 +133,8 @@ public class WritterClass {
         Scanner sc = new Scanner(file);
         String pid;
         String line;
-        int qtyOfTrainingSet = 30;
-        int startAt = 100;
+        int qtyOfTrainingSet = 1000;
+        int startAt = 7200;
         int currentReview = 0;
         int itemsWritten = 0;
         String n="\n";

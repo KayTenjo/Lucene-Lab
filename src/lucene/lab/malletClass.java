@@ -7,6 +7,7 @@ package lucene.lab;
 
 import cc.mallet.classify.Classifier;
 import cc.mallet.pipe.iterator.CsvIterator;
+import cc.mallet.types.LabelAlphabet;
 
 import cc.mallet.types.Labeling;
 
@@ -25,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -139,8 +141,11 @@ public class malletClass {
     }
     
     
-     public void printLabelings(Classifier classifier, String datos) throws IOException {
+     public Double printLabelings(Classifier classifier, String datos) throws IOException {
 
+        double valor_sentimiento=0;
+                
+        int contador_sentimiento=0;
         // Create a new iterator that will read raw instance data from                                     
         //  the lines of a file.                                                                           
         // Lines should be formatted as:                                                                   
@@ -175,15 +180,73 @@ public class malletClass {
         while (instances.hasNext()) {
             Labeling labeling = classifier.classify(instances.next()).getLabeling();
 
-            // print the labels with their weights in descending order (ie best first)                     
-
+            // print the labels with their weights in descending order (ie best first)
+            LabelAlphabet label_list = labeling.getLabelAlphabet();
+            
             for (int rank = 0; rank < labeling.numLocations(); rank++){
-                System.out.print(labeling.getLabelAtRank(rank) + ":" +
-                                 labeling.getValueAtRank(rank) + " ");
+                
+                double positivo=0;
+                double negativo=0;
+                double neutro=0;
+                
+                
+                if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())){
+                    
+                    neutro = labeling.getValueAtRank(rank);
+                 if ("POSITIVO".equals(labeling.getLabelAtRank(rank).toString())) {
+                    
+                    positivo = labeling.getValueAtRank(rank);
+                
+                }
+                
+                if ("NEGATIVO".equals(labeling.getLabelAtRank(rank).toString())){
+                
+                    negativo = labeling.getValueAtRank(rank);
+    
+                }
+                
+                valor_sentimiento = valor_sentimiento + ((positivo + (1- negativo) + (neutro/2))/2);
+                
+                contador_sentimiento++;
+                
+               // System.out.print(labeling.getLabelAtRank(rank) + ":" +
+                                 //labeling.getValueAtRank(rank) + " ");
             }
-            System.out.println();
+            
 
         }
+            
+        
+        }
+        return valor_sentimiento / contador_sentimiento;
     }
-
+     
+     
+     public String comentariosToMallet(String cadena_larga){
+     
+        String[] cadena_split = cadena_larga.split("##");
+        String cadena_final="";
+        String salto_linea= "\r\n ";
+        int cont =0;
+        String label= "a";
+        for (String string : cadena_split){
+            System.out.println(string);
+            cadena_final = cadena_final + cont + " " + label + " " + string;
+            cont++;
+            if(cont != cadena_split.length){
+                
+                cadena_final= cadena_final + salto_linea;
+            
+            }
+            
+            
+            
+        }
+        
+        return cadena_final;
+     }
+     
+     
+    
+     
 }
