@@ -135,6 +135,7 @@ public class WritterClass {
         String line;
         int qtyOfTrainingSet = 1000;
         int startAt = 3003;
+
         int currentReview = 0;
         int itemsWritten = 0;
         String n="\n";

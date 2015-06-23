@@ -5,6 +5,8 @@
  */
 package lucene.lab;
 
+import cc.mallet.classify.Classifier;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -26,12 +28,34 @@ public class LuceneLab {
 
     public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, ParseException, Exception {
 
-
+        WritterClass writer = new WritterClass();
+        writer.writeMB();
+        
+        
+       // String cadena_larga ="vale eres muy zorra ##todos deben morir## Luis is a Whore";
+        
+        
+        //malletClass mallet = new malletClass();
+       // File archivo_clasificador = new File("music.classifier");
+        //Classifier clasificador = mallet.loadClassifier(archivo_clasificador);
+        
+       // String datos = ("1 a la vale es muy zorra");
+        //System.out.println(mallet.printLabelings(clasificador, cadena_final));
+        
+        
+        
+        
         //ReaderClass reader = new ReaderClass();
 
+        
+        
+        
+        
+
+
         //TrainGenerator trainGenerator = new TrainGenerator();
-        WritterClass escribe=new WritterClass();
-        escribe.writeMB();
+        //WritterClass escribe=new WritterClass();
+
 
         
         //trainGenerator.generateTrain();

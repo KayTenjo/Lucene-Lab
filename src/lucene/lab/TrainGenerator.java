@@ -28,8 +28,11 @@ public class TrainGenerator {
         Scanner sc2 = new Scanner(System.in);
         String pid, title, price, uid, pname, hness, score, time, summ, text;
         String line;
+
+
         int qtyOfTrainingSet = 100;
         int startAt = 3300;
+
         int currentReview = 0;
         int itemsWritten = 0;
         int seleccion;
