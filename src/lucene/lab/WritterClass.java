@@ -11,9 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import static java.lang.Thread.sleep;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 import org.musicbrainz.MBWS2Exception;
+import org.musicbrainz.model.TagWs2;
 import org.musicbrainz.model.searchresult.ReleaseResultWs2;
 
 /**
@@ -131,7 +133,7 @@ public class WritterClass {
         Scanner sc = new Scanner(file);
         String pid;
         String line;
-        int qtyOfTrainingSet = 2;
+        int qtyOfTrainingSet = 30;
         int startAt = 100;
         int currentReview = 0;
         int itemsWritten = 0;
@@ -165,27 +167,35 @@ public class WritterClass {
             sc.nextLine();
             sc.nextLine();
             sc.nextLine();
-           
             List<ReleaseResultWs2> datos = mbSearch.releaseSearchByASIN(pid);
-            
-            if (!datos.isEmpty()){ 
-
-            BufferedWriter out = new BufferedWriter(new FileWriter(pid + ".txt", true));
-            out.write(pid + n);
-            out.write(datos.get(0).getRelease().getArtistCreditString()+n);
-            //escribir los demás datos de interés <3
-            out.close();
-            
+            if (!datos.isEmpty()) {
+                try (BufferedWriter out = new BufferedWriter(new FileWriter(pid + ".txt", false))) {
+                    out.write(pid + n);
+                    //escribir los demás datos de interés <3
+                    out.write(datos.get(0).getRelease().getArtistCreditString() + n);
+                    out.write(datos.get(0).getRelease().getTitle() + n);
+                    out.write(String.valueOf(datos.get(0).getRelease().getRating().getAverageRating())+n);
+                    out.write(datos.get(0).getRelease().getYear()+ n);
+                    out.write(datos.get(0).getRelease().getCountryId() + n);
+                    out.write(datos.get(0).getRelease().getBarcode() + n);
+                    out.write(datos.get(0).getRelease().getTracksCount() + n);
+                    out.write(datos.get(0).getRelease().getLabelInfoString() + n);
+                    out.write(datos.get(0).getRelease().getTextLanguage() + n);
+                    List<TagWs2> tags = datos.get(0).getRelease().getTags();
+                    if (!tags.isEmpty()) {
+                        for (TagWs2 next : tags) {
+                            out.write(next.getName() + " ");
+                            //System.out.println(next);
+                        }
+                        out.write(n);
+                    }
+                }
+                System.out.println(pid);
             }
-         
-            System.out.println(pid);
-
             itemsWritten++;
             currentReview++;
             sleep(1051);
-
         }
-
     }
 
 }
