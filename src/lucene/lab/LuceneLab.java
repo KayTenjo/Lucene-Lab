@@ -37,14 +37,14 @@ public class LuceneLab {
         //trainGenerator.generateTrain();
         //ReaderClass reader = new ReaderClass();
        
-       // IndexClass index = new IndexClass();
+        IndexClass index = new IndexClass();
 
        // DB db= new DB();
        //db.updateRelease();
 
         //DB db= new DB();
 
-        //index.Indexer();
+        //index.oli();
         //db.getIdRange("RELEASE",3000,0);
 
 
