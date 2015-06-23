@@ -28,8 +28,11 @@ public class TrainGenerator {
         Scanner sc2 = new Scanner(System.in);
         String pid, title, price, uid, pname, hness, score, time, summ, text;
         String line;
-        int qtyOfTrainingSet = 50;
-        int startAt = 5500;
+
+
+        int qtyOfTrainingSet = 100;
+        int startAt = 3300;
+
         int currentReview = 0;
         int itemsWritten = 0;
         int seleccion;
@@ -89,7 +92,8 @@ public class TrainGenerator {
 
             }
             System.out.println("============================================");
-            System.out.println(summ+" - Escore: "+score);
+            System.out.println(title);
+            System.out.println(summ+" - Score: "+score);
             System.out.println(text);
             
             System.out.print("("+ itemsWritten + " de " +qtyOfTrainingSet +") 1 positivo, 2 neutro, 3 negativo?: ");
