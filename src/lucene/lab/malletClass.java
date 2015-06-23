@@ -141,7 +141,7 @@ public class malletClass {
     }
     
     
-     public Double printLabelings(Classifier classifier, String datos) throws IOException {
+     public Double promedioSentimiento(Classifier classifier, String datos) throws IOException {
 
         double valor_sentimiento=0;
                 
@@ -178,6 +178,10 @@ public class malletClass {
         //  classification results (the labeling). Here we only                                            
         //  care about the Labeling.                                                                       
         while (instances.hasNext()) {
+            
+            double positivo=0;
+            double negativo=0;
+            double neutro=0;
             Labeling labeling = classifier.classify(instances.next()).getLabeling();
 
             // print the labels with their weights in descending order (ie best first)
@@ -185,10 +189,7 @@ public class malletClass {
             
             for (int rank = 0; rank < labeling.numLocations(); rank++){
                 
-                double positivo=0;
-                double negativo=0;
-                double neutro=0;
-                
+                      
                 
                 if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())){
                     
@@ -205,21 +206,110 @@ public class malletClass {
     
                 }
                 
-                valor_sentimiento = valor_sentimiento + ((positivo + (1- negativo) + (neutro/2))/2);
-                
-                contador_sentimiento++;
+               
                 
                // System.out.print(labeling.getLabelAtRank(rank) + ":" +
                                  //labeling.getValueAtRank(rank) + " ");
             }
+                
+                
+            
+
+        }
+            
+            valor_sentimiento = valor_sentimiento + ((positivo + (1- negativo) + (neutro/2))/2);
+                
+            contador_sentimiento++;
+            
+        
+        }
+        return valor_sentimiento / contador_sentimiento;
+    }
+     
+     
+     public String cadenaSentimiento(Classifier classifier, String datos) throws IOException {
+
+        double valor_sentimiento=0;
+                
+        int contador_sentimiento=0;
+        String cadena_final="";
+        // Create a new iterator that will read raw instance data from                                     
+        //  the lines of a file.                                                                           
+        // Lines should be formatted as:                                                                   
+        //                                                                                                 
+        //   [name] [label] [data ... ]                                                                    
+        //                                                                                                 
+        //  in this case, "label" is ignored.                                                              
+
+        StringReader stringReader = new StringReader(datos);
+        // Create a new iterator that will read raw instance data from                                     
+        //  the lines of a file.                                                                           
+        // Lines should be formatted as:                                                                   
+        //                                                                                                 
+        //   [name] [label] [data ... ]                                                                    
+        //                                                                                                 
+        //  in this case, "label" is ignored.                                                              
+
+        CsvIterator reader =
+            new CsvIterator(stringReader,
+                            "(\\w+)\\s+(\\w+)\\s+(.*)",
+                            3, 2, 1);  // (data, label, name) field indices               
+
+        // Create an iterator that will pass each instance through                                         
+        //  the same pipe that was used to create the training data                                        
+        //  for the classifier.                                                                            
+        Iterator instances = classifier.getInstancePipe().newIteratorFrom(reader);
+
+        // Classifier.classify() returns a Classification object                                           
+        //  that includes the instance, the classifier, and the                                            
+        //  classification results (the labeling). Here we only                                            
+        //  care about the Labeling.                                                                       
+        while (instances.hasNext()) {
+            
+            double positivo=0;
+            double negativo=0;
+            double neutro=0;
+            Labeling labeling = classifier.classify(instances.next()).getLabeling();
+
+            // print the labels with their weights in descending order (ie best first)
+            LabelAlphabet label_list = labeling.getLabelAlphabet();
+            
+            for (int rank = 0; rank < labeling.numLocations(); rank++){
+                       
+                if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())){
+                    
+                    neutro = labeling.getValueAtRank(rank);
+                 if ("POSITIVO".equals(labeling.getLabelAtRank(rank).toString())) {
+                    
+                    positivo = labeling.getValueAtRank(rank);
+                
+                }
+                
+                if ("NEGATIVO".equals(labeling.getLabelAtRank(rank).toString())){
+                
+                    negativo = labeling.getValueAtRank(rank);
+    
+                }
+                
+                
+                
+               // System.out.print(labeling.getLabelAtRank(rank) + ":" +
+                                 //labeling.getValueAtRank(rank) + " ");
+            }
+                
+                valor_sentimiento = ((positivo + (1- negativo) + (neutro/2))/2);
+                cadena_final = cadena_final + "##";
+                
+                contador_sentimiento++;
             
 
         }
             
         
         }
-        return valor_sentimiento / contador_sentimiento;
+        return cadena_final;
     }
+     
      
      
      public String comentariosToMallet(String cadena_larga){
