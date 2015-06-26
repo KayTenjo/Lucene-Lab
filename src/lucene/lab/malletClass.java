@@ -135,16 +135,16 @@ public class malletClass {
         double valor_sentimiento = 0;
 
         int contador_sentimiento = 0;
-                                                                   
+
         StringReader stringReader = new StringReader(datos);
-                                                                    
+
         CsvIterator reader
                 = new CsvIterator(stringReader,
                         "(\\w+)\\s+(\\w+)\\s+(.*)",
-                        3, 2, 1);              
-                                              
+                        3, 2, 1);
+
         Iterator instances = classifier.getInstancePipe().newIteratorFrom(reader);
-                                                                    
+
         while (instances.hasNext()) {
 
             double positivo = 0;
@@ -154,7 +154,6 @@ public class malletClass {
 
             // print the labels with their weights in descending order (ie best first)
             //LabelAlphabet label_list = labeling.getLabelAlphabet();
-
             for (int rank = 0; rank < labeling.numLocations(); rank++) {
 
                 if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())) {
@@ -175,25 +174,22 @@ public class malletClass {
                 }
 
             }
-            
+
             valor_sentimiento = valor_sentimiento + ((positivo + (1 - negativo) + (neutro / 2)) / 2);
 
             contador_sentimiento++;
 
         }
 
-       
+        return valor_sentimiento / contador_sentimiento;
+    }
 
-    
-    return valor_sentimiento / contador_sentimiento ;
-}
+    public String cadenaSentimiento(Classifier classifier, String datos) throws IOException {
 
-public String cadenaSentimiento(Classifier classifier, String datos) throws IOException {
+        double valor_sentimiento = 0;
 
-        double valor_sentimiento=0;
-                
-        int contador_sentimiento=0;
-        String cadena_final="";
+        int contador_sentimiento = 0;
+        String cadena_final = "";
         // Create a new iterator that will read raw instance data from                                     
         //  the lines of a file.                                                                           
         // Lines should be formatted as:                                                                   
@@ -211,10 +207,10 @@ public String cadenaSentimiento(Classifier classifier, String datos) throws IOEx
         //                                                                                                 
         //  in this case, "label" is ignored.                                                              
 
-        CsvIterator reader =
-            new CsvIterator(stringReader,
-                            "(\\w+)\\s+(\\w+)\\s+(.*)",
-                            3, 2, 1);  // (data, label, name) field indices               
+        CsvIterator reader
+                = new CsvIterator(stringReader,
+                        "(\\w+)\\s+(\\w+)\\s+(.*)",
+                        3, 2, 1);  // (data, label, name) field indices               
 
         // Create an iterator that will pass each instance through                                         
         //  the same pipe that was used to create the training data                                        
@@ -226,10 +222,10 @@ public String cadenaSentimiento(Classifier classifier, String datos) throws IOEx
         //  classification results (the labeling). Here we only                                            
         //  care about the Labeling.                                                                       
         while (instances.hasNext()) {
-            
-            double positivo=0;
-            double negativo=0;
-            double neutro=0;
+
+            double positivo = 0;
+            double negativo = 0;
+            double neutro = 0;
             instances.next();
             //Classification clasification = classifier.classify(instances.next());
             //Labeling labeling = clasification.getLabeling();
@@ -237,67 +233,56 @@ public String cadenaSentimiento(Classifier classifier, String datos) throws IOEx
 
             // print the labels with their weights in descending order (ie best first)
             //LabelAlphabet label_list = labeling.getLabelAlphabet();
-            
             /*for (int rank = 0; rank < labeling.numLocations(); rank++){
                        
-                if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())){
+             if ("NEUTRO".equals(labeling.getLabelAtRank(rank).toString())){
                     
-                    neutro = labeling.getValueAtRank(rank);
-                }
-                 if ("POSITIVO".equals(labeling.getLabelAtRank(rank).toString())) {
+             neutro = labeling.getValueAtRank(rank);
+             }
+             if ("POSITIVO".equals(labeling.getLabelAtRank(rank).toString())) {
                     
-                    positivo = labeling.getValueAtRank(rank);
+             positivo = labeling.getValueAtRank(rank);
                 
-                }
+             }
                 
-                if ("NEGATIVO".equals(labeling.getLabelAtRank(rank).toString())){
+             if ("NEGATIVO".equals(labeling.getLabelAtRank(rank).toString())){
                 
-                    negativo = labeling.getValueAtRank(rank);
+             negativo = labeling.getValueAtRank(rank);
     
-                }
+             }
                 
-            }*/
-                
-                valor_sentimiento = ((positivo + (1- negativo) + (neutro/2))/2);
-                cadena_final = cadena_final + "##";
-                
-                contador_sentimiento++;
-            
+             }*/
+            valor_sentimiento = ((positivo + (1 - negativo) + (neutro / 2)) / 2);
+            cadena_final = cadena_final + "##";
+
+            contador_sentimiento++;
 
         }
-            
-        
-        
+
         return cadena_final;
     }
-     
-     
-     
-     public String comentariosToMallet(String cadena_larga){
-     
+
+    public String comentariosToMallet(String cadena_larga) {
+
         String[] cadena_split = cadena_larga.split("##");
-        String cadena_final="";
-        String salto_linea= "\r\n ";
-        int cont =0;
-        String label= "a";
-        for (String string : cadena_split){
+        String cadena_final = "";
+        String salto_linea = "\r\n ";
+        int cont = 0;
+        String label = "a";
+        for (String string : cadena_split) {
             //System.out.println(string);
             cadena_final = cadena_final + cont + " " + label + " " + string;
             cont++;
-            if(cont != cadena_split.length){
-                
-                cadena_final= cadena_final + salto_linea;
-            
+            if (cont != cadena_split.length) {
+
+                cadena_final = cadena_final + salto_linea;
+
             }
-            
-            
-            
+
         }
-        
+
         return cadena_final;
-     }
-     
-     
-    
-     
+    }
+
+
 }

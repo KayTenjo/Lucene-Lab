@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.KeywordAnalyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
@@ -57,21 +59,17 @@ public class ReaderClass {
     }
     
     
-    public void search(String consulta, String field) throws ParseException, IOException{
+    public void search(String consulta) throws ParseException, IOException{
     
-        Path indexPath = Paths.get("C:\\index\\");
+        Path indexPath = Paths.get("C:\\index");
         Directory dir = FSDirectory.open(indexPath);
-        
         IndexReader reader = DirectoryReader.open(dir);
         IndexSearcher searcher = new IndexSearcher(reader);
-        
-        PerFieldAnalyzerWrapper analyzerWrapper= this.createAnalyzer();
-         
+        PerFieldAnalyzerWrapper analyzerWrapper = this.createAnalyzer();
         Analyzer analyzer = new WhitespaceAnalyzer();
-        String[] fields = {"title","artist","text","summary","label"};
+        String[] fields = {"titleMin", "artist", "text", "summary", "label","tags"};
         //QueryParser parser = new QueryParser(field, analyzerWrapper);
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(fields , analyzer);
-
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(fields, analyzer);
         Query query = parser.parse(consulta);
         int hitsPerPage = 100;
         //IndexReader reader = IndexReader.open(index);
@@ -79,23 +77,28 @@ public class ReaderClass {
         TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
         searcher.search(query, collector);
         ScoreDoc[] hits = collector.topDocs().scoreDocs;
-        
         System.out.println("Encontré " + hits.length + " hits.");
-        for(int i=0;i<hits.length;++i) {
-            
+       Double myScore=0.0;
+       List <Album> albumes=new ArrayList();
+       
+        for (int i = 0; i < hits.length; ++i) {        
+       Album album=new Album();
+
             int docId = hits[i].doc;
             Document d = searcher.doc(docId);
-            System.out.println((i + 1) + ". Título: " + d.get("title") +"\t" + "Artista: " + d.get("artist"));
-            //System.out.println("Artista: " + d.get("artist"));
-                  
+            album.d=d;
+            //calcular ranking!
+            album.ranking=0.0;
+            album.luceneScore =  hits[i].score;
+            
+            System.out.println((i + 1) + ". Título: " + d.get("title") + "\t" + "Artista: " + d.get("artist"));
+            
+            albumes.add(album);
         }
 
-        
-        
-    
     }
-    
-    
+
+
     
     
     public PerFieldAnalyzerWrapper createAnalyzer(){

@@ -29,7 +29,7 @@ public class LuceneLab {
     public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, ParseException, Exception {
 
         IndexClass index = new IndexClass();
-        index.Indexer();
+//        index.Indexer();
         //WritterClass writer = new WritterClass();
         //writer.writeMB();
         
@@ -47,38 +47,19 @@ public class LuceneLab {
         
         
         
-        //ReaderClass reader = new ReaderClass();
-
-        
-        
-        
-        
-
-
+        ReaderClass reader = new ReaderClass();
         //TrainGenerator trainGenerator = new TrainGenerator();
         //WritterClass escribe=new WritterClass();
-
-
-        
         //trainGenerator.generateTrain();
         //ReaderClass reader = new ReaderClass();
-       
-        
-
        // DB db= new DB();
        //db.updateRelease();
-
         //DB db= new DB();
-
         //index.oli();
         //db.getIdRange("RELEASE",3000,0);
-
-
         //db.isIn("RELEASE"," B000007SLB");
         //db.getIdRange("RELEASE",40, 0);
-        
-
-        /*
+               
 
         while(true){
         Scanner sc = new Scanner(System.in);
@@ -86,8 +67,9 @@ public class LuceneLab {
         String consulta=sc.nextLine();
         //System.out.print("Introduzca el campo : ");
         //String campo=sc.nextLine();
-        reader.search(consulta,"oli");
-        }*/
+        reader.search(consulta);
+        }
+       
         //IndexClass index = new IndexClass();
         //index.Indexer();
 

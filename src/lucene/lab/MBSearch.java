@@ -40,13 +40,7 @@ public class MBSearch {
             String title = release.getRelease().getTitle();
             System.out.println(title);
         }
-
     }
-
-
-
-  
-
 
     public List<ReleaseResultWs2> releaseSearchByASIN(String ASIN) throws MBWS2Exception {
 

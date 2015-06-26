@@ -5,43 +5,47 @@
  */
 package lucene.lab;
 
+import org.apache.lucene.document.Document;
+
 /**
  *
  * @author Rodrigo
  */
-public class RankingClass {
+public class Album implements Comparable<Album>{
+    Document d;
+    Double ranking;    
+    float luceneScore;
+
+    @Override
+    public int compareTo(Album o) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
-    
-    
-    public Double formulaRanking(Double maxScoreLucene, Double luceneScore, Double sentimiento, 
-            String lista_sentimiento, String lista_estrellas, Double max_cant_comentarios, 
-            Double cant_comentarios, Double musicBrainz){
-    
-        float ponderacion_lucene=0;
-        float ponderacion_sentimiento=0;
+   
+    public Double formulaRanking(Double maxScoreLucene, Double luceneScore, Double sentimiento,
+            String lista_sentimiento, String lista_estrellas, Double max_cant_comentarios,
+            Double cant_comentarios, Double musicBrainz) {
+
+        float ponderacion_lucene = 0;
+        float ponderacion_sentimiento = 0;
         float ponderacion_calidad=0;
         float ponderacion_popularidad=0;
         float ponderacion_musicBrainz=0;
-
-        Double ranking = 0.0;
-        
-        luceneScore = luceneScore(luceneScore, maxScoreLucene);
+        Double ranking = 0.0;    
+        luceneScore = luceneScore(this.luceneScore, maxScoreLucene);
         //Double sentimiento;
         Double calidad = estrellas(lista_sentimiento, lista_estrellas);
         Double popularidad = cant_comentarios/ max_cant_comentarios;
         //Double musicBrainz = calidadMB(lista_musicbrai);
-
         ranking = luceneScore * ponderacion_lucene + sentimiento * ponderacion_sentimiento +
                 calidad * ponderacion_calidad + popularidad * ponderacion_popularidad +
-                musicBrainz * ponderacion_musicBrainz;
-        
-        return ranking;
-    
+                musicBrainz * ponderacion_musicBrainz;        
+        return ranking;    
     }
     
     
     
-    public Double luceneScore(Double score, Double max){
+    public Double luceneScore(Float score, Double max){
     
         return score/max;
     }
