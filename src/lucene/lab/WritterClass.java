@@ -134,13 +134,13 @@ public class WritterClass {
         String pid;
         String line;
         int qtyOfTrainingSet = 1000;
-        int startAt = 7200;
+        int startAt = 3003;
+
         int currentReview = 0;
         int itemsWritten = 0;
         String n="\n";
         MBSearch mbSearch=new MBSearch();
-
-        
+        int i=0;
         iteracionPorReviews:
         while (itemsWritten < qtyOfTrainingSet && sc.hasNextLine()) {
             if (startAt > currentReview) {
@@ -190,12 +190,13 @@ public class WritterClass {
                         out.write(n);
                     }
                 }
-                System.out.println(pid);
+                i++;
+                System.out.println(i+"/"+itemsWritten+": "+pid);
+                
             }
             itemsWritten++;
             currentReview++;
             sleep(1051);
         }
     }
-
 }

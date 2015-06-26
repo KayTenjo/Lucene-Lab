@@ -28,8 +28,10 @@ public class LuceneLab {
 
     public static void main(String[] args) throws IOException, MBWS2Exception, InterruptedException, SQLException, ParseException, Exception {
 
-        WritterClass writer = new WritterClass();
-        writer.writeMB();
+        IndexClass index = new IndexClass();
+        index.Indexer();
+        //WritterClass writer = new WritterClass();
+        //writer.writeMB();
         
         
        // String cadena_larga ="vale eres muy zorra ##todos deben morir## Luis is a Whore";
@@ -61,14 +63,14 @@ public class LuceneLab {
         //trainGenerator.generateTrain();
         //ReaderClass reader = new ReaderClass();
        
-       // IndexClass index = new IndexClass();
+        
 
        // DB db= new DB();
        //db.updateRelease();
 
         //DB db= new DB();
 
-        //index.Indexer();
+        //index.oli();
         //db.getIdRange("RELEASE",3000,0);
 
 
