@@ -64,7 +64,7 @@ public class ReaderClass {
         Analyzer analyzer = new WhitespaceAnalyzer();
         String[] fields = {"title", "titleMin", "artist", "artistMin", "text", "summary", "tags", "tagsMin"};
         //QueryParser parser = new QueryParser(field, analyzerWrapper);
-        MultiFieldQueryParser parser = new MultiFieldQueryParser(fields, analyzer);
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(fields, analyzerWrapper);
 
         Query query = parser.parse(consulta);
         int hitsPerPage = 100;
