@@ -73,7 +73,8 @@ public class LuceneLab {
             String consulta=sc.nextLine();
             //System.out.print("Introduzca el campo : ");
             //String campo=sc.nextLine();
-            reader.search(consulta, consulta);
+            reader.search(consulta);
+            
         }
        
         //IndexClass index = new IndexClass();

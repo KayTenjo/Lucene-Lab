@@ -13,39 +13,59 @@ import org.apache.lucene.document.Document;
  */
 public class Album implements Comparable<Album>{
     Document d;
-    Double ranking;    
+    Double score;    
     float luceneScore;
 
     @Override
     public int compareTo(Album o) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        Double score_comp = o.score - this.score;
+        
+        if (this.score == o.score) {
+            
+            return 0;
+        }
+        
+        else if (o.score > this.score){
+        
+            return 1;
+        }
+        
+        else {
+            
+            return -1;
+        }
     }
     
    
-    public Double formulaRanking(Double maxScoreLucene, Double luceneScore, Double sentimiento,
-            String lista_sentimiento, String lista_estrellas, Double max_cant_comentarios,
-            Double cant_comentarios, Double musicBrainz) {
+    public void formulaRanking(Float maxScoreLucene, 
+            int max_cant_comentarios) {
 
-        float ponderacion_lucene = 0;
-        float ponderacion_sentimiento = 0;
-        float ponderacion_calidad=0;
-        float ponderacion_popularidad=0;
-        float ponderacion_musicBrainz=0;
-        Double ranking = 0.0;    
-        luceneScore = luceneScore(this.luceneScore, maxScoreLucene);
-        //Double sentimiento;
+        Double ponderacion_lucene = 0.3;
+        Double ponderacion_sentimiento = 0.3;
+        Double ponderacion_calidad=0.2;
+        Double ponderacion_popularidad=0.15;
+        Double ponderacion_musicBrainz =0.5;
+        Double ranking = 0.0;
+        int cant_comentarios = this.cant_comentarios();
+        String lista_sentimiento = this.d.get("sentimiento");
+        String lista_estrellas = this.d.get("score");
+        Float luceneScore_rank = luceneScore(this.luceneScore, maxScoreLucene);
+        Double sentimiento = Double.parseDouble(this.d.get("sentProm"));
         Double calidad = estrellas(lista_sentimiento, lista_estrellas);
-        Double popularidad = cant_comentarios/ max_cant_comentarios;
+        Double popularidad = (double)cant_comentarios/ max_cant_comentarios;
+        Double musicBrainz = Double.parseDouble(this.d.get("mbRating")) / 5;
         //Double musicBrainz = calidadMB(lista_musicbrai);
-        ranking = luceneScore * ponderacion_lucene + sentimiento * ponderacion_sentimiento +
+        ranking = luceneScore_rank * ponderacion_lucene + sentimiento * ponderacion_sentimiento +
                 calidad * ponderacion_calidad + popularidad * ponderacion_popularidad +
                 musicBrainz * ponderacion_musicBrainz;        
-        return ranking;    
+        
+        this.score = ranking;
     }
     
     
     
-    public Double luceneScore(Float score, Double max){
+    public Float luceneScore(Float score, Float max){
     
         return score/max;
     }
@@ -122,9 +142,27 @@ public class Album implements Comparable<Album>{
             index++;
         }
         
+        if(cont > 0){
+            
+            return calidad / cont;
         
-        return calidad / cont;
+        }
+        
+        else{
+        
+            return 0.5;
+        }
+        
+        
     
+    }
+    
+    public int cant_comentarios(){
+    
+        
+        String[] comentarios = this.d.get("text").split("##");
+        return comentarios.length;
+        
     }
     
 }
