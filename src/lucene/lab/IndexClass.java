@@ -65,60 +65,45 @@ public class IndexClass {
         malletClass mallet = new malletClass();
         File archivo_clasificador = new File("music.classifier");
         Classifier clasificador = mallet.loadClassifier(archivo_clasificador);
-        
-        
-                Map<String, Analyzer> analyzerPerField = new HashMap<>();
-        
-        analyzerPerField.put("productId", new WhitespaceAnalyzer() ); 
-        analyzerPerField.put("title", new WhitespaceAnalyzer() );
+        Map<String, Analyzer> analyzerPerField = new HashMap<>();
+        analyzerPerField.put("productId", new KeywordAnalyzer());
+        analyzerPerField.put("title", new WhitespaceAnalyzer());
         analyzerPerField.put("titleMin", new WhitespaceAnalyzer());
         analyzerPerField.put("price", new KeywordAnalyzer());
         analyzerPerField.put("avScore", new KeywordAnalyzer());
         analyzerPerField.put("score", new KeywordAnalyzer());
-        analyzerPerField.put("UserId", new WhitespaceAnalyzer());
-        analyzerPerField.put("UserName", new WhitespaceAnalyzer());
-        analyzerPerField.put("summary", new WhitespaceAnalyzer());
-        analyzerPerField.put("text", new WhitespaceAnalyzer());
-        analyzerPerField.put("artist", new WhitespaceAnalyzer());
-        analyzerPerField.put("mbRating", new WhitespaceAnalyzer());
-        analyzerPerField.put("year", new WhitespaceAnalyzer());
-        analyzerPerField.put("countryid", new WhitespaceAnalyzer());
-        analyzerPerField.put("barcode", new WhitespaceAnalyzer());
-        analyzerPerField.put("trackCount", new WhitespaceAnalyzer());
-        analyzerPerField.put("label", new WhitespaceAnalyzer());
-        analyzerPerField.put("lang", new WhitespaceAnalyzer());
-        analyzerPerField.put("tags", new WhitespaceAnalyzer());
-        analyzerPerField.put("tagsMin", new WhitespaceAnalyzer());
-        analyzerPerField.put("titleMin", new WhitespaceAnalyzer());
-        analyzerPerField.put("titleMin", new WhitespaceAnalyzer());
-        analyzerPerField.put("titleMin", new WhitespaceAnalyzer());
-        analyzerPerField.put("titleMin", new WhitespaceAnalyzer());
-        
-       
-        analyzerPerField.put("userID", new KeywordAnalyzer());
-        analyzerPerField.put("profileName", new WhitespaceAnalyzer() );
-        analyzerPerField.put("score", new KeywordAnalyzer());
-        
+        analyzerPerField.put("UserId", new KeywordAnalyzer());
+        analyzerPerField.put("UserName", new KeywordAnalyzer());
         analyzerPerField.put("summary", new StandardAnalyzer());
         analyzerPerField.put("text", new StandardAnalyzer());
-        
+        analyzerPerField.put("artist", new WhitespaceAnalyzer());
+        analyzerPerField.put("artistMin", new WhitespaceAnalyzer());
+        analyzerPerField.put("titlemb", new WhitespaceAnalyzer());
+        analyzerPerField.put("mbRating", new KeywordAnalyzer());
+        analyzerPerField.put("year", new KeywordAnalyzer());
+        analyzerPerField.put("countryid", new KeywordAnalyzer());
+        analyzerPerField.put("barcode", new KeywordAnalyzer());
+        analyzerPerField.put("trackCount", new KeywordAnalyzer());
+        analyzerPerField.put("label", new WhitespaceAnalyzer());
+        analyzerPerField.put("lang", new KeywordAnalyzer());  
+        analyzerPerField.put("tags", new WhitespaceAnalyzer()); 
+        analyzerPerField.put("tagsMin", new WhitespaceAnalyzer() );
+        analyzerPerField.put("sentimiento", new KeywordAnalyzer());
+        analyzerPerField.put("sentProm", new KeywordAnalyzer());       
 
         
-        PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerPerField);
-               
+        PerFieldAnalyzerWrapper analyzerWrapper = new PerFieldAnalyzerWrapper(new StandardAnalyzer(), analyzerPerField);               
         Path indexPath = Paths.get("C:\\index\\");
         Directory directory = FSDirectory.open(indexPath);
         IndexWriterConfig config = new IndexWriterConfig(analyzerWrapper);
         config.setRAMBufferSizeMB(512.0);
         IndexWriter iwriter = new IndexWriter(directory, config);
-        
-        
         File file = new File("junto.txt");
         Scanner sc = new Scanner(file);
         String pid = "", title = "", titleMin = "", price = "", avScore = "", score = "", uid = "", uname = "", summary = "", text = "";
         String artist = "", artistMin = "", titlemb = "", mbRating = "", year = "", countryid = "", barcode = "", trackCount = "", label = "", lang = "", tagsMin = "", tags = "";
-        int qtyOfTrainingSet = 100;
-        int startAt = 3;
+        int qtyOfTrainingSet = 1500;
+        int startAt = 1503;
         int currentReview = 0;
         int itemsWritten = 0;
         String n = "\n";
@@ -158,15 +143,12 @@ public class IndexClass {
             a = sc.nextLine();
             text = a;
             File f = new File("MB/" + pid + ".txt");
-            
+
             String comentariosMallet = mallet.comentariosToMallet(text);
             String sentimiento = mallet.cadenaSentimiento(clasificador,comentariosMallet );
-            //Double sentProm = mallet.promedioSentimiento(clasificador, comentariosMallet);
-            
-            //String sentimiento="";
-            Double sentProm = 0.0;
-            
-            
+            Double sentProm = mallet.promedioSentimiento(clasificador, comentariosMallet);
+            //String sentimiento = "";
+            //Double sentProm = 0.0;
             if (f.exists() && !f.isDirectory()) {
                 Scanner scf = new Scanner(f);
                 scf.nextLine();
@@ -180,30 +162,19 @@ public class IndexClass {
                 trackCount = scf.nextLine();
                 label = scf.nextLine();
                 lang = scf.nextLine();
-                //System.out.println(artist);
                 if (scf.hasNextLine()) {
                     tags = scf.nextLine();
                     tagsMin = tags.toLowerCase();
                 }
-                
-                
-                
             }
-            
-            
-            
-            
-            //addDoc llamda
-            
-            addDoc(iwriter, pid, title, titleMin, price, avScore, score, uid, 
-                    uname, summary, text, artist, artistMin, titlemb, mbRating, year, countryid, 
+            System.out.println("###################################### Documento: " + itemsWritten);
+            addDoc(iwriter, pid, title, titleMin, price, avScore, score, uid,
+                    uname, summary, text, artist, artistMin, titlemb, mbRating, year, countryid,
                     barcode, trackCount, label, lang, tags, tagsMin, sentimiento, sentProm);
-            
             itemsWritten++;
-            currentReview++;
-            
-            
+            currentReview++;           
         }
+        iwriter.close();
     }
 
     private static void addDoc(IndexWriter w, String pid, String title, String titleMin, String price, 
@@ -216,7 +187,6 @@ public class IndexClass {
         if(mbRating==""){
         mbRating="0.0";
         }
-
         doc.add(new StringField("productId", pid, Field.Store.YES));//
         doc.add(new StringField("title", title, Field.Store.YES));
         doc.add(new StringField("titleMin", titleMin, Field.Store.YES));
@@ -240,10 +210,8 @@ public class IndexClass {
         doc.add(new TextField("tags",tags, Field.Store.YES));
         doc.add(new TextField("tagsMin",tagsMin, Field.Store.YES));
         doc.add(new TextField("sentimiento",sentimiento, Field.Store.YES));
-        doc.add(new DoubleField("sentProm",sentProm, Field.Store.YES));
-        
+        doc.add(new DoubleField("sentProm",sentProm, Field.Store.YES));        
         w.addDocument(doc);
-        System.out.println("Agregué el documento " + pid);
     }
     
 
